@@ -5,9 +5,8 @@ const { combine, timestamp, printf, colorize, json, uncolorize } = format;
 // 1) Console: colored, timestamped
 const consoleFormat = combine(
   colorize(),
-  timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
   printf(({ level, message, timestamp }) => {
-    return `${timestamp} ${level}: ${message}`;
+    return `${level}: ${message}`;
   })
 );
 
