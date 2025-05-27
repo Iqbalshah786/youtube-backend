@@ -4,6 +4,7 @@ import helmet from "helmet";
 import cors from "cors";
 import morgan from "morgan";
 import logger from "./utils/logger.js";
+import cookieParser from "cookie-parser";
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use(helmet());
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
+app.use(cookieParser());
 
 // morgan format for logging
 const morganFormat = ":method :url :status :response-time ms";
