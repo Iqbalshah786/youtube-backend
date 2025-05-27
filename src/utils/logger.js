@@ -1,21 +1,27 @@
 import { createLogger, format, transports } from "winston";
-const { combine, timestamp, json, colorize } = format;
 
-const consoleLogFormat = format.combine(
-  format.colorize(),
-  format.printf(({ level, message, timestamp }) => {
-    return `${level}: ${message}`;
+const { combine, timestamp, printf, colorize, json, uncolorize } = format;
+
+// 1) Console: colored, timestamped
+const consoleFormat = combine(
+  colorize(),
+  timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
+  printf(({ level, message, timestamp }) => {
+    return `${timestamp} ${level}: ${message}`;
   })
 );
 
+// 2) File: uncolored JSON with ISO timestamp
+const fileFormat = combine(uncolorize(), timestamp(), json());
+
 const logger = createLogger({
   level: "info",
-  format: combine(colorize(), timestamp(), json()),
   transports: [
-    new transports.Console({
-      format: consoleLogFormat,
+    new transports.Console({ format: consoleFormat }),
+    new transports.File({
+      filename: "app.log",
+      format: fileFormat,
     }),
-    new transports.File({ filename: "app.log" }),
   ],
 });
 
