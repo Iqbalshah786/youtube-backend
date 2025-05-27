@@ -2,6 +2,9 @@ import { v2 as cloudinary } from "cloudinary";
 import streamifier from "streamifier";
 import logger from "./logger.js";
 import { ApiError } from "./ApiError.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 // configure Cloudinary with your env vars
 cloudinary.config({
@@ -35,4 +38,18 @@ export function uploadBufferToCloudinary(buffer, opts = {}) {
     // pipe the in-memory buffer into Cloudinary
     streamifier.createReadStream(buffer).pipe(uploadStream);
   });
+}
+export async function deleteFromCloudinary(publicId) {
+  if (!publicId) {
+    throw new ApiError(400, "No public ID provided for deletion");
+  }
+
+  try {
+    const result = await cloudinary.uploader.destroy(publicId);
+    logger.info(`Cloudinary delete succeeded: ${publicId}`);
+    return result;
+  } catch (error) {
+    logger.error(`Cloudinary delete failed: ${error.message}`);
+    return null;
+  }
 }
