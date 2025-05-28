@@ -16,8 +16,8 @@ const generateAccessAndRefreshTokens = async (userId) => {
     if (!user) {
       throw new ApiError(404, "User not found");
     }
-    const accessToken = user.generateAccessToken();
-    const refreshToken = user.generateRefreshToken();
+    const accessToken = await user.generateAccessToken();
+    const refreshToken = await user.generateRefreshToken();
     user.refreshToken = refreshToken;
     await user.save({ validateBeforeSave: false });
     return { accessToken, refreshToken };
@@ -82,7 +82,7 @@ const registerUser = asyncHandler(async (req, res) => {
       username: username.toLowerCase(),
     });
     const createdUser = await User.findById(user._id).select(
-      "-password -refershToken"
+      "-password -refreshToken -__v"
     );
     if (!createdUser) {
       throw new ApiError(500, "Failed to create user");
@@ -115,7 +115,7 @@ const loginUser = asyncHandler(async (req, res) => {
     user._id
   );
   const loggedInUser = await User.findById(user._id).select(
-    "-password -refreshToken"
+    "-password -refreshToken -__v"
   );
   if (!loggedInUser) {
     throw new ApiError(500, "Login failed, user not found");
