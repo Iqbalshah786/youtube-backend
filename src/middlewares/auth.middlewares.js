@@ -13,7 +13,7 @@ const verifyJWT = asyncHandler(async (req, _, next) => {
   try {
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
     const user = await User.findById(decoded?._id).select(
-      "-password -refreshToken"
+      "-password -refreshToken -__v"
     );
     if (!user) {
       throw new ApiError(401, "User not found");
