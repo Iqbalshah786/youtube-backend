@@ -9,11 +9,12 @@ import {
   changeCurrentPassword,
   updateUserAvatar,
   updateUserCoverImage,
+  refreshAndAccessToken,
 } from "../controllers/user.controllers.js";
 import { verifyJWT } from "../middlewares/auth.middlewares.js";
 
 const router = Router();
-
+// unsecured routes
 router.route("/register").post(
   upload.fields([
     { name: "avatar", maxCount: 1 },
@@ -22,16 +23,19 @@ router.route("/register").post(
   registerUser
 );
 
+router.route("/login").post(loginUser);
+router.route("/refresh-token").post(refreshAndAccessToken);
+
 // secured routes
 router.route("/logout").post(verifyJWT, logOutUser);
-router.route("/login").post(loginUser);
-router.route("/change-password").patch(verifyJWT, changeCurrentPassword);
+router.route("/change-password").post(verifyJWT, changeCurrentPassword);
 router.route("/current-user").get(verifyJWT, getCurrentUser);
 router.route("/update-account-details").patch(verifyJWT, updateAccountDetails);
 router
-  .route("/update-avatar")
-  .patch(upload.single("avatar"), verifyJWT, updateUserAvatar);
+  .route("/avatar")
+  .patch(verifyJWT, upload.single("avatar"), updateUserAvatar);
 router
-  .route("/update-cover-image")
-  .patch(upload.single("coverImage"), verifyJWT, updateUserCoverImage);
+  .route("/cover-image")
+  .patch(verifyJWT, upload.single("coverImage"), updateUserCoverImage);
+
 export default router;

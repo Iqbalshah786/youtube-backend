@@ -250,9 +250,12 @@ const getCurrentUser = asyncHandler(async (req, res) => {
 });
 
 const updateUserAvatar = asyncHandler(async (req, res) => {
+  // file type validation
+  if (!req.file?.mimetype.startsWith("image/")) {
+    throw new ApiError(400, "Only image files are allowed");
+  }
   // single-file upload puts file on req.file
   const avatar = req.file?.buffer;
-  console.log(req.file);
 
   if (!avatar) {
     throw new ApiError(400, "Avatar is required");
@@ -283,6 +286,10 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
 });
 
 const updateUserCoverImage = asyncHandler(async (req, res) => {
+  // file type validation
+  if (!req.file?.mimetype.startsWith("image/")) {
+    throw new ApiError(400, "Only image files are allowed");
+  }
   // single-file upload puts file on req.file
   const coverImage = req.file?.buffer;
   if (!coverImage) {
