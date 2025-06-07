@@ -12,7 +12,7 @@ import {
   refreshAndAccessToken,
   getUserChannelProfile,
   getWatchHistory,
-} from "../controllers/user.controllers.js";
+} from "../controllers/user.controller.js";
 import { verifyJWT } from "../middlewares/auth.middlewares.js";
 
 const router = Router();
